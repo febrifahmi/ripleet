@@ -12,7 +12,7 @@ from elasticsearch import Elasticsearch
 
 # [1] Read data from elasticsearch into pandas dataframe. we filter directly the hits.hits.* content ex: http://localhost:9200/rippleet_tweet/_search?q=idul+fitri&size=5000&filter_path=hits.hits.*&pretty
 # change to:     _search?q=_exists_:retweeted_status%20AND%20lebaran    <-- to filter data and return only tweet which has retweeted_status key and contains word "lebaran"
-searchQuery = "_exists_:retweeted_status+AND+prabowo"
+searchQuery = "_exists_:retweeted_status+AND+lebaran"
 urltoload = "http://localhost:9200/rippleet_tweet/_search?q=%s&size=1000&filter_path=hits.hits.*&pretty" % (searchQuery)
 df = pd.read_json(path_or_buf=urltoload) 
 
