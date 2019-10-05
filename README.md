@@ -1,6 +1,6 @@
 # Ripleet
 
-Ripleet, a social media "ripple" miner and Business Intelligence platform.
+[Ripleet](http://rippleet.com), a social media "ripple" miner and Business Intelligence platform.
 
 # Tentang Rippleet
 
