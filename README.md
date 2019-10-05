@@ -16,7 +16,7 @@ Di Rippleet, kami melakukan 'jemput bola' dengan langsung mengumpulkan berbagai 
 
 # Tech Stack
 
-Rippleet's technology stack:
+Rippleet's technology stack (*subject to change in the near future*):
 
 <img src="https://github.com/febrifahmi/ripleet/blob/master/rippleet_techstack_rev1.png"></img>
 
