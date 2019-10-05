@@ -30,7 +30,7 @@ auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
 auth.set_access_token(settings.ACCESS_TOKEN, settings.ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
-logfile = "logreport.txt"
+logfile = "../logreport.txt"
 # # Report API URL
 # reportURLendpoint = "https://api.twitter.com/1.1/users/report_spam.json?"
 
