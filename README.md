@@ -1,7 +1,22 @@
-# ripleet
+# Ripleet
+
 Ripleet, a social media "ripple" miner and Business Intelligence platform.
 
-The technology stack:
+# Tentang Rippleet
+
+**Rippleet** merupakan platform analytics yang menggabungkan antara *social media analytics*, *online mainstream media analytics*, dengan indikator-indikator sosial, ekonomi, dan lingkungan dalam suatu *Dashboard monitoring* yang dapat disesuaikan dengan kebutuhan pengguna.
+
+Rippleet mengombinasikan sumber data seperti **Twitter Streaming API**, artikel terkini dari mainstream *news media online*, data kejadian bencana dan kondisi cuaca maupun lingkungan terkini dari BMKG, dan data indikator sosial ekonomi masyarakat dari BPS.
+
+Kami di Rippleet melihat bahwa organisasi khususnya organisasi yang bergerak di sektor kebijakan publik perlu memiliki *'agility'* dan *'responsiveness'* sebagaimana sektor privat dan dunia usaha. Para pemangku kepentingan di sektor publik perlu memiliki kemampuan melihat sinyal-sinyal keberhasilan maupun kegagalan pembangunan sedini mungkin melalui berbagai 'sensor' dan indikator yang ada/sudah tersedia.
+
+Nama 'Rippleet', berasal dari kata *'ripple'* dan *'fleet'* yang bermakna bahwa Rippleet memiliki visi menjadi 'armada' yang mampu menangkap 'gelombang-gelombang' maupun 'riak' informasi dan sinyal dari suatu fenomena ataupun persepsi publik terhadap suatu produk dan layanan. Data dan informasi yang ditangkap dan dikumpulkan melalui Rippleet ini akan diolah sehingga dapat dimanfaatkan organisasi untuk segera melakukan pembenahan dan perbaikan layanan tanpa harus menunggu *feedback* melalui kanal tradisional seperti Kotak Pos Aduan dan Saran maupun *Complaint Handling System* tradisional lainnya yang mensyaratkan bahwa masyarakat aktif untuk memberikan feedback melalui kanal khusus yang disediakan.
+
+Di Rippleet, kami melakukan 'jemput bola' dengan langsung mengumpulkan berbagai sinyal yang telah tersedia secara aktif. Kami tidak menunggu publik untuk memberikan *feedback*, namun kami langsung membaca fenomena dan persepsi yang berkembang di tengah masyarakat. Kami memanfaatkan berbagai metode pengumpulan data dan informasi terkini dalam sebuah *'data pipeline'* yang mutakhir dan memanfaatkan sepenuhnya teknologi Big Data yang telah berkembang.
+
+# Tech Stack
+
+Rippleet's technology stack:
 
 <img src="https://github.com/febrifahmi/ripleet/blob/master/rippleet_techstack_rev1.png"></img>
 
