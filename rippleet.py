@@ -246,7 +246,7 @@ class streamListener(StreamListener):
 
 		except BaseException as e:
 			print("Error on_data: %s" % str(e))
-			if e.code == 429:
+			if str(e) == "HTTP Error 429: Too Many Requests":
 				print "Sleep mode for 5 minutes."
 				time.sleep(300)
 			else:
