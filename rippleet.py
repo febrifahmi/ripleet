@@ -106,16 +106,16 @@ class streamListener(StreamListener):
 	 			d = json.loads(line)
 		 		# processing the data
 		 		if d["lang"] == "id" or d["lang"] == "in":
-			 		if 'extended_tweet' in d and 'RT @' not in d['extended_tweet']['full_text'].encode('utf-8'):
-			 			teks_twit = re.sub(r'[^a-zA-Z0-9_@ ,.-:/]', '', d['extended_tweet']['full_text'].encode('utf-8',errors='ignore'))
+			 		if 'extended_tweet' in d and 'RT @' not in d['extended_tweet']['full_text']:
+			 			teks_twit = re.sub(r'[^a-zA-Z0-9_@ ,.-:/]', '', d['extended_tweet']['full_text'])
 			 			teksclean = fn.multiwordReplace(teks_twit,fn.wordDic)
 			 			#print teksclean
-			 			print console_colors.OKBLUE + d['user']['screen_name'].encode('utf-8') + ": " + console_colors.ENDC + teksclean + "\n"
+			 			print console_colors.OKBLUE + d['user']['screen_name'] + ": " + console_colors.ENDC + teksclean + "\n"
 				 		print("GMT: "+console_colors.WHITE+time.strftime("%a, %d %b %Y %I:%M:%S GMT"+console_colors.ENDC, time.gmtime()))
 				 		print("Local: "+console_colors.WHITE+strftime("%a, %d %b %Y %I:%M:%S %p %Z (GMT+7)\r"+console_colors.ENDC))
 				 		# send data to socket for processing in spark
 				 		print d['user']['screen_name']
-				 		analisis = textblob.TextBlob(d['extended_tweet']['full_text'].encode('utf-8'))
+				 		analisis = textblob.TextBlob(d['extended_tweet']['full_text'])
 				 		an = analisis.translate(from_lang="id", to="en")
 				 		print(an.sentiment)
 				 		print(an.polarity)
@@ -135,7 +135,7 @@ class streamListener(StreamListener):
 				 			cursor = conn.cursor()
 							# insert data into table
 							sqlquery = ''' INSERT INTO rippleet_tweet (TIMECOL, SCREENNAME, TWEET, WORDCOUNTS, REPLYCOUNTS, RETWEETCOUNTS, FAVCOUNTS, FOLLOWER, POLARITY) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) '''
-							cursor.execute(sqlquery, (fn.gettimeNow(),d['user']['screen_name'].encode('utf-8'), teksclean, len(d['extended_tweet']['full_text'].encode('utf-8').split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
+							cursor.execute(sqlquery, (fn.gettimeNow(),d['user']['screen_name'], teksclean, len(d['extended_tweet']['full_text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
 							conn.commit()
 							count = cursor.rowcount
 							print (count, " Record inserted successfully into table")
@@ -150,16 +150,16 @@ class streamListener(StreamListener):
 								print(" [*] PostgreSQL connection is closed")
 						print console_colors.GREY+ "_" * width + console_colors.ENDC
 
-			 		elif 'extended_tweet' not in d and 'RT @' not in d['text'].encode('utf-8'):
-			 			teks_twit = re.sub(r'[^a-zA-Z0-9_@ ,.-:/]', '', d['text'].encode('utf-8',errors='ignore'))
+			 		elif 'extended_tweet' not in d and 'RT @' not in d['text']:
+			 			teks_twit = re.sub(r'[^a-zA-Z0-9_@ ,.-:/]', '', d['text'])
 			 			teksclean = fn.multiwordReplace(teks_twit,fn.wordDic)
 			 			#print teksclean
-			 			print console_colors.OKBLUE + d['user']['screen_name'].encode('utf-8') + ": " + console_colors.ENDC + teksclean + "\n"
+			 			print console_colors.OKBLUE + d['user']['screen_name'] + ": " + console_colors.ENDC + teksclean + "\n"
 				 		print("GMT: "+console_colors.WHITE+time.strftime("%a, %d %b %Y %I:%M:%S GMT"+console_colors.ENDC, time.gmtime()))
 				 		print("Local: "+console_colors.WHITE+strftime("%a, %d %b %Y %I:%M:%S %p %Z (GMT+7)\r"+console_colors.ENDC))
 				 		# send data to socket for processing in spark
 				 		print d['user']['screen_name']
-				 		analisis = textblob.TextBlob(d['text'].encode('utf-8'))
+				 		analisis = textblob.TextBlob(d['text'])
 				 		an = analisis.translate(from_lang="id", to="en")
 				 		print(an.sentiment)
 				 		print(an.polarity)
@@ -180,7 +180,7 @@ class streamListener(StreamListener):
 				 			cursor = conn.cursor()
 							# insert data into table
 							sqlquery = ''' INSERT INTO rippleet_tweet (TIMECOL, SCREENNAME, TWEET, WORDCOUNTS, REPLYCOUNTS, RETWEETCOUNTS, FAVCOUNTS, FOLLOWER, POLARITY) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) '''
-							cursor.execute(sqlquery, (fn.gettimeNow(),d['user']['screen_name'].encode('utf-8'), teksclean, len(d['text'].encode('utf-8').split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
+							cursor.execute(sqlquery, (fn.gettimeNow(),d['user']['screen_name'], teksclean, len(d['text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
 							conn.commit()
 							count = cursor.rowcount
 							print (count, " Record inserted successfully into table")
@@ -196,15 +196,15 @@ class streamListener(StreamListener):
 						print console_colors.GREY+ "_" * width + console_colors.ENDC
 					# capturing tweets which are retweet of other's tweet
 			 		else:
-			 			teks_twit = re.sub(r'[^a-zA-Z0-9_@ ,.-:/]', '', d['text'].encode('utf-8',errors='ignore'))
+			 			teks_twit = re.sub(r'[^a-zA-Z0-9_@ ,.-:/]', '', d['text'])
 			 			teksclean = fn.multiwordReplace(teks_twit,fn.wordDic)
 			 			#print teksclean
-			 			print console_colors.OKBLUE + d['user']['screen_name'].encode('utf-8') + ": " + console_colors.ENDC + teksclean + "\n"
+			 			print console_colors.OKBLUE + d['user']['screen_name'] + ": " + console_colors.ENDC + teksclean + "\n"
 				 		print("GMT: "+console_colors.WHITE+time.strftime("%a, %d %b %Y %I:%M:%S GMT"+console_colors.ENDC, time.gmtime()))
 				 		print("Local: "+console_colors.WHITE+strftime("%a, %d %b %Y %I:%M:%S %p %Z (GMT+7)\r"+console_colors.ENDC))
 				 		# send data to socket for processing in spark
 				 		print d['user']['screen_name']
-				 		analisis = textblob.TextBlob(d['text'].encode('utf-8'))
+				 		analisis = textblob.TextBlob(d['text'])
 				 		an = analisis.translate(from_lang="id", to="en")
 				 		print(an.sentiment)
 				 		print(an.polarity)
@@ -225,7 +225,7 @@ class streamListener(StreamListener):
 				 			cursor = conn.cursor()
 							# insert data into table
 							sqlquery = ''' INSERT INTO rippleet_tweet (TIMECOL, SCREENNAME, TWEET, WORDCOUNTS, REPLYCOUNTS, RETWEETCOUNTS, FAVCOUNTS, FOLLOWER, POLARITY) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) '''
-							cursor.execute(sqlquery, (fn.gettimeNow(),d['user']['screen_name'].encode('utf-8'), teksclean, len(d['text'].encode('utf-8').split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
+							cursor.execute(sqlquery, (fn.gettimeNow(),d['user']['screen_name'], teksclean, len(d['text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
 							conn.commit()
 							count = cursor.rowcount
 							print (count, " Record inserted successfully into table")
@@ -246,7 +246,12 @@ class streamListener(StreamListener):
 
 		except BaseException as e:
 			print("Error on_data: %s" % str(e))
-			time.sleep(5)
+			if e.code == 429:
+				print "Sleep mode for 5 minutes."
+				time.sleep(300)
+			else:
+				print "Delay for 5 seconds."
+				time.sleep(5)
 
 		# record the data into postgresql data
 		def on_exception(self, exception):
