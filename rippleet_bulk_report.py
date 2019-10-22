@@ -28,7 +28,7 @@ from urllib3.exceptions import ProtocolError, TimeoutError, SSLError, ReadTimeou
 # Set authentication for tweepy
 auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
 auth.set_access_token(settings.ACCESS_TOKEN, settings.ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
+api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 logfile = "../logreport.txt"
 # # Report API URL
@@ -112,7 +112,7 @@ class streamListener(StreamListener):
                         # print(an.polarity)
 
                     for keyword in settings.BLOCK_TERMS:
-                        if keyword in teksclean and an.polarity < 0.0:
+                        if keyword in teks_twit:
                             fn.ToRify()
                             print console_colors.WHITE+"Username: "+ console_colors.ENDC +"@%s" %(console_colors.OKBLUE + d['user']['screen_name'] + console_colors.ENDC) + " | " + "Followers= %s" %(str(d['user']['followers_count']))
                             print console_colors.WHITE+"Tweet: "+ console_colors.ENDC + "%s" %(teks_twit)
@@ -123,7 +123,7 @@ class streamListener(StreamListener):
                             print str(d['user']['screen_name']) + ' is being reported.'
                             print console_colors.GREY+ "_" * width + console_colors.ENDC
                             with open(logfile,'a+') as records:
-                                records.write("Reported account: @%s (Follower: %s)" %(d['user']['screen_name'],str(d['user']['followers_count'])) + " | " + "Tweet: %s" %(teks_twit))
+                                records.write("Reported account: @%s (Follower: %s)" %(d['user']['screen_name'],str(d['user']['followers_count'])) + " | " + "Tweet: %s.\n" %(teks_twit))
                                 records.close()
 
                         else:
@@ -141,7 +141,12 @@ class streamListener(StreamListener):
 
         except BaseException as e:
             print("Error on_data: %s" % str(e))
-            time.sleep(0.5)
+            if str(e) == "HTTP Error 429: Too Many Requests":
+                print "Sleep mode for 5 minutes."
+                time.sleep(300)
+            else:
+                print "Delay for 5 seconds."
+                time.sleep(5)
 
         # record the data into postgresql data
         def on_exception(self, exception):
