@@ -11,10 +11,12 @@ import bs4
 import functions as fn
 import logging
 import os
+import time
 import json
 import re
 import requests
 import settings
+import sqlite3
 
 # read width and height of the terminal window
 (width, height) = fn.getTerminalSize()
@@ -64,6 +66,17 @@ baseurl = "https://mobile.twitter.com"
 starturl = "https://mobile.twitter.com/search?q=%s&src=typed_query" %(searchterm)
 nexturltoparse = ""
 
+countpage = 0
+
+def setupSqliteDB():
+	# connect to sqlite3 database
+	conn = sqlite3.connect('../tmpdb.sqlite')
+	# create cursor object and execute CREATE TABLE
+	cur = conn.cursor()
+	cur.execute('CREATE TABLE IF NOT EXISTS tweetdata (username VARCHAR, fullname VARCHAR, avatar VARCHAR, tweet TEXT, links TEXT, hashtags VARCHAR)')
+	cur.execute('DELETE FROM tweetdata')
+	conn.commit()
+	conn.close()
 
 def checkNextPage(soup):
 	loadmore = soup.find("div",{"class":"w-button-more"})
@@ -72,12 +85,9 @@ def checkNextPage(soup):
 		if nextpage:
 			nextpage_url = nextpage['href']
 			nexturltoparse = baseurl+nextpage_url
-			# print nexturltoparse
+			return nexturltoparse
 	else:
 		print "No more page. Finished!"
-
-	return nexturltoparse
-
 
 def collectItems(url,nexturl):
 	if len(nexturl) == 0:
@@ -91,15 +101,44 @@ def collectItems(url,nexturl):
 	# [4] parse the result
 	tweet_container = html_soup.select("table.tweet")
 	# print tweet_container
+	
+	counter = 0
 
 	try:
 		for item in tweet_container:
 			if item is not None:
-				item_username = item.find("div",{"class":"username"}).get_text().rstrip("\n")
-				item_fullname = item.find("strong",{"class":"fullname"}).get_text().rstrip("\n")
-				item_text = re.sub(r'[(\r\n|\r|\n\r)+]', '', item.find("div",{"class":"tweet-text"}).get_text().rstrip("\n"))
+				item_username = item.find("div",{"class":"username"}).get_text().strip()
+				item_avatar = item.find("td",{"class":"avatar"}).find("img")['src']
+				item_fullname = item.find("strong",{"class":"fullname"}).get_text().strip()
+				item_text = re.sub(r'[(\r\n|\r|\n\r)+]', "", item.find("div",{"class":"tweet-text"}).get_text().strip())
+				if item.find("a",{"class":"twitter_external_link dir-ltr tco-link"}):
+					item_external_link = item.find("a",{"class":"twitter_external_link dir-ltr tco-link"})['data-expanded-url']
+				else:
+					item_external_link = "(No link)"
+				if item.find("a",{"class":"twitter-hashtag dir-ltr"}):
+					item_hashtags = item.find("a",{"class":"twitter-hashtag dir-ltr"}).get_text()
+				else:
+					item_hashtags = "(No hashtags)"
+				# if item.find("td",{"class":"timestamp"}):
+				# 	detailurl = item.find("td",{"class":"timestamp"}).find("a")["href"]
+				# 	childresponse = requests.get("https://twitter.com"+detailurl)
+				# 	detailsoup = BeautifulSoup(response.text, 'html.parser')
+				# 	print detailsoup
+				print "Tweet data --> %s: %s |--| %s |--| %s |--| %s" % (item_username, item_text, item_external_link, item_hashtags, item_avatar)
+				counter = counter+1
+				setupSqliteDB()
 
-				print "Tweet data --> %s: %s" % (item_username,item_text)
+				try:
+					conn = sqlite3.connect('../tmpdb.sqlite')
+					cur = conn.cursor()
+					cur.execute('INSERT INTO tweetdata (username, fullname, avatar, tweet, links, hashtags) VALUES (?,?,?,?,?,?);',(item_username,item_fullname,item_avatar,item_text,item_external_link,item_hashtags))
+					conn.commit()
+					conn.close()
+					print "========>>> Successfully insert data into database! <<<========"
+					print "_"*width
+
+				except Exception as ex:
+					print("Cannot insert data: ", str(ex))
 			else:
 				pass
 
@@ -108,6 +147,8 @@ def collectItems(url,nexturl):
 		pass
 
 	loadoldertweet = checkNextPage(html_soup)
+	# print "Successfully processed %d page(s)." %(countpage)
+	time.sleep(5)
 	collectItems("",loadoldertweet)
 
 if __name__ == "__main__":
