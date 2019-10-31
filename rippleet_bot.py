@@ -7,6 +7,7 @@ Written by: @febrifahmi (adapted from many sources)
 
 '''
 from bs4 import BeautifulSoup, CData
+from datetime import datetime, timedelta
 import bs4
 import functions as fn
 import logging
@@ -58,22 +59,24 @@ Karena sulitnya mendapatkan API key, kita coba dengan scraping teknik:
 '''
 
 # set search term
-searchterm = 'indonesia'
+searchterm = 'kabinet'
+operator = 'since:2019-10-01'
+dbfile = "../" + "%s_%s" %(searchterm, fn.getdatetimenow()) + ".sqlite"
 
 # [3] set url and initiate bautifulsoup parser object
 # urltoparse = "https://twitter.com/search?q=%s" %(searchterm)
 baseurl = "https://mobile.twitter.com"
-starturl = "https://mobile.twitter.com/search?q=%s&src=typed_query" %(searchterm)
+starturl = "https://mobile.twitter.com/search?q=%s&src=typed_query" %(searchterm+" "+operator)
 nexturltoparse = ""
 
 countpage = 0
 
 def setupSqliteDB():
 	# connect to sqlite3 database
-	conn = sqlite3.connect('../tmpdb.sqlite')
+	conn = sqlite3.connect(dbfile)
 	# create cursor object and execute CREATE TABLE
 	cur = conn.cursor()
-	cur.execute('CREATE TABLE IF NOT EXISTS tweetdata (username VARCHAR, fullname VARCHAR, avatar VARCHAR, tweet TEXT, links TEXT, hashtags VARCHAR)')
+	cur.execute('CREATE TABLE IF NOT EXISTS tweetdata (username VARCHAR, fullname VARCHAR, avatar VARCHAR, tweet TEXT, links TEXT, hashtags VARCHAR, published TEXT)')
 	cur.execute('DELETE FROM tweetdata')
 	conn.commit()
 	conn.close()
@@ -88,6 +91,7 @@ def checkNextPage(soup):
 			return nexturltoparse
 	else:
 		print "No more page. Finished!"
+		exit()
 
 def collectItems(url,nexturl):
 	if len(nexturl) == 0:
@@ -119,19 +123,32 @@ def collectItems(url,nexturl):
 					item_hashtags = item.find("a",{"class":"twitter-hashtag dir-ltr"}).get_text()
 				else:
 					item_hashtags = "(No hashtags)"
-				# if item.find("td",{"class":"timestamp"}):
-				# 	detailurl = item.find("td",{"class":"timestamp"}).find("a")["href"]
-				# 	childresponse = requests.get("https://twitter.com"+detailurl)
-				# 	detailsoup = BeautifulSoup(response.text, 'html.parser')
-				# 	print detailsoup
-				print "Tweet data --> %s: %s |--| %s |--| %s |--| %s" % (item_username, item_text, item_external_link, item_hashtags, item_avatar)
+				if item.find("td",{"class":"timestamp"}):
+					item_deltatime = item.find("td",{"class":"timestamp"}).get_text()
+					print item_deltatime
+					if re.search(r'(\d+h)',item_deltatime):
+						deltahours = int(re.search(r'(\d+)',item_deltatime).group(0))
+						item_publish_time = datetime.now()-timedelta(hours=deltahours)
+						print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+					elif re.search(r'(\d+m)',item_deltatime):
+						deltaminutes = int(re.search(r'(\d+)',item_deltatime).group(0))
+						item_publish_time = datetime.now()-timedelta(minutes=deltaminutes)
+						print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+					elif re.search(r'(\d+s)',item_deltatime):
+						deltaseconds = int(re.search(r'(\d+)',item_deltatime).group(0))
+						item_publish_time = datetime.now()-timedelta(seconds=deltaseconds)
+						print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+					else:
+						item_publish_time = datetime.strptime(str(item_deltatime+" "+str(datetime.today().year)).strip(), "%b %d %Y")
+						print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+				
+				print "Tweet data --> %s: %s |--| %s |--| %s |--| %s |--| %s" % (item_username, item_text, item_external_link, item_hashtags, item_avatar, item_publish_time)
 				counter = counter+1
-				setupSqliteDB()
 
 				try:
-					conn = sqlite3.connect('../tmpdb.sqlite')
+					conn = sqlite3.connect(dbfile)
 					cur = conn.cursor()
-					cur.execute('INSERT INTO tweetdata (username, fullname, avatar, tweet, links, hashtags) VALUES (?,?,?,?,?,?);',(item_username,item_fullname,item_avatar,item_text,item_external_link,item_hashtags))
+					cur.execute('INSERT INTO tweetdata (username, fullname, avatar, tweet, links, hashtags, published) VALUES (?,?,?,?,?,?,?);',(item_username,item_fullname,item_avatar,item_text,item_external_link,item_hashtags,item_publish_time))
 					conn.commit()
 					conn.close()
 					print "========>>> Successfully insert data into database! <<<========"
@@ -152,4 +169,5 @@ def collectItems(url,nexturl):
 	collectItems("",loadoldertweet)
 
 if __name__ == "__main__":
+	setupSqliteDB()
 	collectItems(starturl,nexturltoparse)
