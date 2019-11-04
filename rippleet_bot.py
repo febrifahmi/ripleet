@@ -18,6 +18,7 @@ import re
 import requests
 import settings
 import sqlite3
+from urllib3.exceptions import ProtocolError, TimeoutError, SSLError, ReadTimeoutError, ConnectionError, IncompleteRead
 
 # read width and height of the terminal window
 (width, height) = fn.getTerminalSize()
@@ -59,8 +60,8 @@ Karena sulitnya mendapatkan API key, kita coba dengan scraping teknik:
 '''
 
 # set search term
-searchterm = 'kabinet'
-operator = 'since:2019-10-01'
+searchterm = 'pns'
+operator = ''
 dbfile = "../" + "%s_%s" %(searchterm, fn.getdatetimenow()) + ".sqlite"
 
 # [3] set url and initiate bautifulsoup parser object
@@ -82,18 +83,22 @@ def setupSqliteDB():
 	conn.close()
 
 def checkNextPage(soup):
+	global countpage
 	loadmore = soup.find("div",{"class":"w-button-more"})
 	if loadmore:
 		nextpage = loadmore.find("a",href=True)
 		if nextpage:
 			nextpage_url = nextpage['href']
 			nexturltoparse = baseurl+nextpage_url
-			return nexturltoparse
+			countpage = countpage+1
+			return nexturltoparse,countpage
 	else:
 		print "No more page. Finished!"
+		print(soup)
 		exit()
 
 def collectItems(url,nexturl):
+	fn.ToRify()
 	if len(nexturl) == 0:
 		response = requests.get(url)
 	else:
@@ -139,8 +144,14 @@ def collectItems(url,nexturl):
 						item_publish_time = datetime.now()-timedelta(seconds=deltaseconds)
 						print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
 					else:
-						item_publish_time = datetime.strptime(str(item_deltatime+" "+str(datetime.today().year)).strip(), "%b %d %Y")
-						print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+						if datetime.strptime(str(item_deltatime).strip(), "%b %d"):
+							item_publish_time = datetime.strptime(str(item_deltatime+" "+str(datetime.today().year)).strip(), "%b %d %Y")
+							print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+						elif datetime.strptime(str(item_deltatime).strip(), "%b %d %Y"):
+							item_publish_time = datetime.strptime(str(item_deltatime).strip(), "%b %d %Y")
+							print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+						else:
+							pass
 				
 				print "Tweet data --> %s: %s |--| %s |--| %s |--| %s |--| %s" % (item_username, item_text, item_external_link, item_hashtags, item_avatar, item_publish_time)
 				counter = counter+1
@@ -164,10 +175,15 @@ def collectItems(url,nexturl):
 		pass
 
 	loadoldertweet = checkNextPage(html_soup)
-	# print "Successfully processed %d page(s)." %(countpage)
+	print "Successfully processed %d page(s)." %(countpage)
 	time.sleep(5)
-	collectItems("",loadoldertweet)
+	collectItems("",loadoldertweet[0])
 
 if __name__ == "__main__":
 	setupSqliteDB()
-	collectItems(starturl,nexturltoparse)
+	try:
+		collectItems(starturl,nexturltoparse)
+	except (TimeoutError, SSLError, ReadTimeoutError, ConnectionError, IncompleteRead) as e:
+		logging.warning("Network error occurred. Keep calm and carry on.", str(e))
+		time.sleep(60)
+		pass

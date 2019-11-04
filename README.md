@@ -40,3 +40,26 @@ Untuk itu anda harus mengetahui beberapa informasi berikut:
 4. Anda memanggil data dengan format misalnya seperti berikut:
 
 `SELECT timecol AS "time", tweet AS "raw_tweet", FROM rippleet_tweet WHERE tweet LIKE '%infrastruktur%' OR tweet LIKE '%jalan tol%' GROUP BY timecol`
+
+# Rippleet Bot/Scraper
+
+Rippleet menambahkan Tweet scaper di dalam kodenya (`rippleet_bot.py`). Berikut ini beberapa operators yang dapat digunakan dalam Twitter search:
+
+| Operators                         | Finds tweest...                                                           |
+|-----------------------------------|---------------------------------------------------------------------------|
+| twitter search                    | containing both "twitter" and "search". This is the default operator.     |
+| "happy hour"                      | containing the exact phrase "happy hour".                                 |
+| love OR hate                      | containing either "love" or "hate" (or both).                             |
+| beer -root                        | containing "beer" but not "root".                                         |
+| #haiku                            | containing the hashtag "haiku".                                           |
+| from:alexiskold                   | sent from person "alexiskold".                                            |
+| to:techcrunch                     | sent to person "techcrunch".                                              |
+| @mashable                         | referencing person "mashable".                                            |
+| "happy hour" near:"san francisco" | containing the exact phrase "happy hour" and sent near "san francisco".   |
+| near:NYC within:15mi              | sent within 15 miles of "NYC".                                            |
+| superhero since:2010-12-27        | containing "superhero" and sent since date "2010-12-27" (year-month-day). |
+| ftw until:2010-12-27              | containing "ftw" and sent up to date "2010-12-27".                        |
+| hilarious filter:links            | containing "hilarious" and linking to URLs.                               |
+| news source:"Twitter Lite"        | containing "news" and entered via Twitter Lite                            |
+
+
