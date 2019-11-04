@@ -60,14 +60,15 @@ Karena sulitnya mendapatkan API key, kita coba dengan scraping teknik:
 '''
 
 # set search term
-searchterm = 'pns'
+searchterm = 'wisata'
 operator = ''
+lang = 'id'
 dbfile = "../" + "%s_%s" %(searchterm, fn.getdatetimenow()) + ".sqlite"
 
 # [3] set url and initiate bautifulsoup parser object
 # urltoparse = "https://twitter.com/search?q=%s" %(searchterm)
 baseurl = "https://mobile.twitter.com"
-starturl = "https://mobile.twitter.com/search?q=%s&src=typed_query" %(searchterm+" "+operator)
+starturl = "https://mobile.twitter.com/search?l=%s&q=%s&src=typed_query" %(lang, searchterm+" "+operator)
 nexturltoparse = ""
 
 countpage = 0
@@ -144,14 +145,34 @@ def collectItems(url,nexturl):
 						item_publish_time = datetime.now()-timedelta(seconds=deltaseconds)
 						print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
 					else:
-						if datetime.strptime(str(item_deltatime).strip(), "%b %d"):
-							item_publish_time = datetime.strptime(str(item_deltatime+" "+str(datetime.today().year)).strip(), "%b %d %Y")
-							print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
-						elif datetime.strptime(str(item_deltatime).strip(), "%b %d %Y"):
-							item_publish_time = datetime.strptime(str(item_deltatime).strip(), "%b %d %Y")
-							print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+						if len(str(item_deltatime).strip().split()) > 2:
+							if datetime.strptime(str(item_deltatime).strip(), "%b %d %y"):
+								item_publish_time = datetime.strptime(str(item_deltatime).strip(), "%b %d %y")
+								print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+							elif datetime.strptime(str(item_deltatime).strip(), "%d %b %y"):
+								item_publish_time = datetime.strptime(str(item_deltatime).strip(), "%d %b %y")
+								print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+							else:
+								pass
+						elif len(str(item_deltatime).strip().split()) == 2:
+							if datetime.strptime(str(item_deltatime).strip(), "%b %d"):
+								item_publish_time = datetime.strptime(str(item_deltatime+" "+str(datetime.today().year)).strip(), "%b %d %Y")
+								print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+							else:
+								pass
 						else:
 							pass
+						# if datetime.strptime(str(item_deltatime).strip(), "%b %d"):
+						# 	item_publish_time = datetime.strptime(str(item_deltatime+" "+str(datetime.today().year)).strip(), "%b %d %Y")
+						# 	print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+						# elif datetime.strptime(str(item_deltatime).strip(), "%b %d %y"):
+						# 	item_publish_time = datetime.strptime(str(item_deltatime).strip(), "%b %d %y")
+						# 	print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+						# elif datetime.strptime(str(item_deltatime).strip(), "%d %b %y"):
+						# 	item_publish_time = datetime.strptime(str(item_deltatime).strip(), "%d %b %y")
+						# 	print item_publish_time.strftime("%a, %d %b %Y %I:%M:%S")
+						# else:
+						# 	pass
 				
 				print "Tweet data --> %s: %s |--| %s |--| %s |--| %s |--| %s" % (item_username, item_text, item_external_link, item_hashtags, item_avatar, item_publish_time)
 				counter = counter+1
