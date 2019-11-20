@@ -122,8 +122,13 @@ class streamListener(StreamListener):
                             print "Keywords %s found in tweet text.. >> " %(keyword) +console_colors.RED+" FOUND"+console_colors.ENDC+" << (Time elapsed: %d)" %(fn.gettimeNow()-starttime)
                             print str(d['user']['screen_name']) + ' is being reported.'
                             print console_colors.GREY+ "_" * width + console_colors.ENDC
+
+                            # with open(logfile,'a+') as records:
+                            #     records.write("Reported account: @%s (Follower: %s)" %(d['user']['screen_name'],str(d['user']['followers_count'])) + " | " + "Tweet: %s.\n" %(teks_twit))
+                            #     records.close()
+
                             with open(logfile,'a+') as records:
-                                records.write("Reported account: @%s (Follower: %s)" %(d['user']['screen_name'],str(d['user']['followers_count'])) + " | " + "Tweet: %s.\n" %(teks_twit))
+                                records.write("@%s\n" %(d['user']['screen_name']))
                                 records.close()
 
                         else:
