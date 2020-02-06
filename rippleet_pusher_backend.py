@@ -1,10 +1,10 @@
 import pusher
 
 pusher_client = pusher.Pusher(
-  app_id='771414',
-  key='key',
-  secret='secret',
-  cluster='ap1',
+  app_id='xxxxxx',
+  key='xxxx',
+  secret='xxxx',
+  cluster='xxx',
   ssl=True
 )
 
