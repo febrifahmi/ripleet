@@ -63,3 +63,7 @@ Rippleet menambahkan Tweet scaper di dalam kodenya (`rippleet_bot.py`). Berikut 
 | news source:"Twitter Lite"        | containing "news" and entered via Twitter Lite                            |
 
 
+# Code
+
+Kode yang terdapat dalam Rippleet sebagian kecil merupakan modifikasi dari berbagai sumber. Pada umumnya implementasi kode tersebut dimodifikasi dari kode solusi yang terdapat di Stackoverflow, kecuali yang tertulis eksplisit dalam kode. Hanya bagian-bagian kecil saja yang saya tulis dari nol dan digabungkan dengan kode lain.
+Untuk itu, kredit untuk para penulis kode aslinya.  
