@@ -184,7 +184,7 @@ def startStream():
 # searching tweet based on keywords list from the stream and return the user.screen_name that tweeting those tweets, filter by number of followers (follower_count)
 # if the keyword list found in the tweet, report the user
 def searchTwitter():
-	queries = ['wan abud']
+	queries = ['test terms']
 	for query in queries:
 		result = api.search(q=query,count=10000,result_type='mixed')
 		return result
