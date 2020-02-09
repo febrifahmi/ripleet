@@ -135,7 +135,7 @@ class streamListener(StreamListener):
 				 			cursor = conn.cursor()
 							# insert data into table
 							sqlquery = ''' INSERT INTO rippleet_tweet (TIMECOL, SCREENNAME, TWEET, WORDCOUNTS, REPLYCOUNTS, RETWEETCOUNTS, FAVCOUNTS, FOLLOWER, POLARITY) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) '''
-							cursor.execute(sqlquery, (fn.getdatetimeNow(),d['user']['screen_name'], teksclean, len(d['extended_tweet']['full_text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
+							cursor.execute(sqlquery, (fn.getdatetimenow(),d['user']['screen_name'], teksclean, len(d['extended_tweet']['full_text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
 							conn.commit()
 							count = cursor.rowcount
 							print (count, " Record inserted successfully into table")
@@ -180,7 +180,7 @@ class streamListener(StreamListener):
 				 			cursor = conn.cursor()
 							# insert data into table
 							sqlquery = ''' INSERT INTO rippleet_tweet (TIMECOL, SCREENNAME, TWEET, WORDCOUNTS, REPLYCOUNTS, RETWEETCOUNTS, FAVCOUNTS, FOLLOWER, POLARITY) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) '''
-							cursor.execute(sqlquery, (fn.getdatetimeNow(),d['user']['screen_name'], teksclean, len(d['text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
+							cursor.execute(sqlquery, (fn.getdatetimenow(),d['user']['screen_name'], teksclean, len(d['text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
 							conn.commit()
 							count = cursor.rowcount
 							print (count, " Record inserted successfully into table")
@@ -225,7 +225,7 @@ class streamListener(StreamListener):
 				 			cursor = conn.cursor()
 							# insert data into table
 							sqlquery = ''' INSERT INTO rippleet_tweet (TIMECOL, SCREENNAME, TWEET, WORDCOUNTS, REPLYCOUNTS, RETWEETCOUNTS, FAVCOUNTS, FOLLOWER, POLARITY) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) '''
-							cursor.execute(sqlquery, (fn.getdatetimeNow(),d['user']['screen_name'], teksclean, len(d['text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
+							cursor.execute(sqlquery, (fn.getdatetimenow(),d['user']['screen_name'], teksclean, len(d['text'].split()), d['reply_count'], d['retweet_count'], d['favorite_count'], d['user']['followers_count'], an.polarity))
 							conn.commit()
 							count = cursor.rowcount
 							print (count, " Record inserted successfully into table")
