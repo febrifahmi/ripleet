@@ -3,3 +3,7 @@ theme: jekyll-theme-cayman
 #content
 title: Rippleet | Expect Us. Challenge Us.
 description: This site host the Rippleet project's code in my Github page. Feel free to fork, contribute, and pull a request.
+
+#show download
+show_downloads: "true"
+google_analytics: UA-106604725-10
