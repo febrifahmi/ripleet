@@ -1,6 +1,6 @@
 # Ripleet
 
-[Ripleet](www.rippleet.com), a social media "ripple" miner and Business Intelligence platform.
+[Ripleet](http://www.rippleet.com), a social media "ripple" miner and Business Intelligence platform.
 
 # Tentang Rippleet
 
@@ -20,7 +20,7 @@ Rippleet's technology stack (*subject to change in the near future*):
 
 <img src="https://github.com/febrifahmi/ripleet/blob/master/rippleet_techstack_rev1.png"></img>
 
-Saat ini, hanya `TwitterStreamingAPI`->`tweepy`->`PostgreSQL`/`ElasticSearch`->`Grafana` dan `Online News`->`scraper`->`PostgreSQL`/`ElasticSearch`->`Grafana` yang diimplementasikan di Rippleet. Namun, mesin ES *most of the time* tidak operasional karena keterbatasan storage dan bandwidth VPS yang saya sewa. Anda dapat menghubungi saya via email untuk mengajukan permohonan akses ke [Rippleet](www.rippleet.com/). 
+Saat ini, hanya `TwitterStreamingAPI`->`tweepy`->`PostgreSQL`/`ElasticSearch`->`Grafana` dan `Online News`->`scraper`->`PostgreSQL`/`ElasticSearch`->`Grafana` yang diimplementasikan di Rippleet. Namun, mesin ES *most of the time* tidak operasional karena keterbatasan storage dan bandwidth VPS yang saya sewa. Anda dapat menghubungi saya via email untuk mengajukan permohonan akses ke [Rippleet](http://www.rippleet.com). 
 
 # Tentang Dashboard Rippleet
 
